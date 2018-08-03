@@ -20,12 +20,12 @@ class _AddDeviceState extends State<AddDevice> {
 
   void initState() {
     super.initState();
-    retryCount = 10;
+    retryCount = 5;
     _devices = List();
     _wifiManager = WifiManager();
     _wifiSubscription =
         WifiManager.stream.receiveBroadcastStream().listen(onData);
-    Timer.periodic(Duration(seconds: 5), (Timer t) {
+    Timer.periodic(Duration(seconds: 2), (Timer t) {
       print("searching...");
       if (retryCount != 0) {
         _demandScan();
@@ -79,20 +79,32 @@ class _AddDeviceState extends State<AddDevice> {
         centerTitle: true,
         automaticallyImplyLeading: false,
       ),
-      body: Container(
-        child: (retryCount != 0 || _devices.isNotEmpty)
-            ? ListView.builder(
-                itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                    title: Text(_devices[index]),
-                    onTap: () {
-                      _configure(_devices[index]);
-                    },
-                  );
-                },
-                itemCount: _devices.length,
-              )
-            : Container(child: Text("No device could be found")),
+      body: Column(
+        children: <Widget>[
+          retryCount != 0
+              ? Container(
+                  padding: EdgeInsets.all(16.0),
+                  child: CircularProgressIndicator(),
+                )
+              : Container(),
+          Expanded(
+            child: Container(
+              child: (retryCount != 0 || _devices.isNotEmpty)
+                  ? ListView.builder(
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                          title: Text(_devices[index]),
+                          onTap: () {
+                            _configure(_devices[index]);
+                          },
+                        );
+                      },
+                      itemCount: _devices.length,
+                    )
+                  : Container(child: Text("No device could be found")),
+            ),
+          ),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );

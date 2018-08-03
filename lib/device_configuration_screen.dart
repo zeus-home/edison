@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'package:edison/hercules_config.dart';
 import 'package:edison/wifi_manager.dart';
 
 class DeviceConfigurationScreen extends StatefulWidget {
@@ -18,25 +19,30 @@ class _DeviceConfigurationScreenState extends State<DeviceConfigurationScreen> {
   bool _isConnecting = true;
 
   WifiManager _wifiManager;
+  HerculesConfig _config;
 
   @override
   void initState() {
     super.initState();
     _wifiManager = WifiManager();
     _wifiManager.connectToNetwork(ssid: widget.device);
+    _config = HerculesConfig();
     Timer.periodic(const Duration(seconds: 2), (Timer t) async {
       print("checking...");
-      String currentSSID = await _wifiManager.getCurrentSSID();
-      print(currentSSID);
-      print("\"${widget.device}\"");
       if (await _wifiManager.getCurrentSSID() == "\"${widget.device}\"") {
         t.cancel();
         print("Connected...");
         setState(() {
           _isConnecting = false;
         });
+        getCapabilities();
       }
     });
+  }
+
+  void getCapabilities() {
+    print("Fetching...");
+    _config.getCapabilities();
   }
 
   @override
@@ -51,6 +57,10 @@ class _DeviceConfigurationScreenState extends State<DeviceConfigurationScreen> {
           _DeviceTitle(widget.device),
           _isConnecting ? _EstablishingConnection() : Container(),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: getCapabilities,
+        child: Icon(Icons.explore),
       ),
     );
   }

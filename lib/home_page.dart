@@ -18,30 +18,14 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            "Zeus",
-            style: TextStyle(fontSize: 32.0),
-            textAlign: TextAlign.center,
-          ),
-          Text(
-            "Home Automation",
-            style: TextStyle(fontSize: 24.0),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      )),
+      body: Container(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(builder: (BuildContext context) => AddDevice()),
           );
         },
-        tooltip: 'Increment',
+        tooltip: 'Add new device',
         child: Icon(Icons.add),
       ),
     );
